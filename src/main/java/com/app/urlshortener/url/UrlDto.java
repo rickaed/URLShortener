@@ -1,4 +1,4 @@
-package com.app.url_shortener.urlShortener;
+package com.app.urlshortener.url;
 
 public class UrlDto {
     private String url;

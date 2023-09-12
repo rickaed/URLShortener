@@ -1,22 +1,19 @@
-package com.app.url_shortener.bdd;
+package com.app.urlshortener.url;
 
 
 import java.util.UUID;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Document(collation = "urlshorter")
+
 public class URLEntity {
-    @Id
+   
     private UUID id = UUID.randomUUID();;
-    @JsonProperty("short-url")
-    private String shortUrl;
+    @JsonProperty("short-id")
+    private String shortId;
     @JsonProperty("real-url")
     private String realUrl;
-    @JsonProperty("Removal-Token")
+    @JsonProperty("removal-Token")
     private String token;
     private String date;
 
@@ -24,17 +21,10 @@ public class URLEntity {
     }
 
     public URLEntity(
-            String shortUrl,
+            String shortId,
             String realUrl) {
-        this.shortUrl = shortUrl;
+        this.shortId = shortId;
         this.realUrl = realUrl;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("URLEntity[id=%s,shortUrl=%s,realUrl=%s,token=%s,date=%s]",
-                id, shortUrl, realUrl,token,date);
-
     }
 
     public UUID getId() {
@@ -46,11 +36,11 @@ public class URLEntity {
     }
 
     public String getShortUrl() {
-        return this.shortUrl;
+        return this.shortId;
     }
 
-    public void setShortUrl(String shortUrl) {
-        this.shortUrl = shortUrl;
+    public void setShortUrl(String shortId) {
+        this.shortId = shortId;
     }
 
     public String getRealUrl() {
