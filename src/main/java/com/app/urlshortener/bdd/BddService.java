@@ -20,6 +20,8 @@ public class BddService {
    public BddService(BddRepository bddRepository) {
       this.bddRepository = bddRepository;
    }
+
+   
    @JsonComponent
    public static class Serializer extends JsonSerializer<BddEntity> {
 
@@ -57,8 +59,8 @@ public class BddService {
 
 
 
-   public boolean exist(String url) {
+   // public boolean exist(String url) {
 
-   }
+   // }
 
 }

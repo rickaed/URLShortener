@@ -12,8 +12,8 @@ import com.app.urlshortener.bdd.BddService;
 
 @Service
 public class UrlService {
-    private final BddRepository bddRepository;
-    private final BddService bddService;
+    private  BddRepository bddRepository;
+    private  BddService bddService;
 
     public UrlService(BddRepository bddRepository, BddService bddService) {
         this.bddRepository = bddRepository;
@@ -22,26 +22,26 @@ public class UrlService {
 
     boolean goodUrl = false;
 
-    public ResponseEntity<?> response(String url) {
-        try {
-            goodUrl = validUrl(url);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } 
-        if (goodUrl){
-           boolean urlStore = bddService.exist(url)
-        }
-        /**
-         * if url !exist
-         * "id": "2bffc207-6fd5-4e1d-afc3-b09b4d380416",
-         * "short-id": "aX8Pm2wt",
-         * "real-url": "https://url-a-raccourcir.com/"
-         * 
-         * else =>
-         * return String "invalid url" code : 400
-         */
-        return null;
-    }
+    // public ResponseEntity<?> response(String url) {
+    //     try {
+    //         goodUrl = validUrl(url);
+    //     } catch (URISyntaxException e) {
+    //         e.printStackTrace();
+    //     } 
+    //     if (goodUrl){
+    //        boolean urlStore = bddService.exist(url)
+    //     }
+    //     /**
+    //      * if url !exist
+    //      * "id": "2bffc207-6fd5-4e1d-afc3-b09b4d380416",
+    //      * "short-id": "aX8Pm2wt",
+    //      * "real-url": "https://url-a-raccourcir.com/"
+    //      * 
+    //      * else =>
+    //      * return String "invalid url" code : 400
+    //      */
+    //     return null;
+    // }
 
     // verifie que l'url commence par http(s)
     private final static boolean validUrl(String url) throws URISyntaxException {

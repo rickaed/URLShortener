@@ -71,4 +71,15 @@ public class BddEntity {
     public void setDate(Long date) {
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return "BddEntity{" +
+                "short-id='" + shortId + '\'' +
+                ", real-url='" + realUrl + '\'' +
+                ", removal-Token='" + token + '\'' +
+                ", access-date=" + date +
+                ", id='" + id + '\'' +
+                '}';
+    }
 }
