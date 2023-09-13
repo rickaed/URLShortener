@@ -1,37 +1,42 @@
-package com.app.urlshortener.url;
-
+package com.app.urlshortener.bdd;
 
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+public class BddEntity {
 
-public class URLEntity {
-   
-    private UUID id = UUID.randomUUID();;
+    private String id = UUID.randomUUID().toString();
     @JsonProperty("short-id")
     private String shortId;
     @JsonProperty("real-url")
     private String realUrl;
     @JsonProperty("removal-Token")
     private String token;
-    private String date;
+    @JsonProperty("access-date")
+    private Long date;
 
-    public URLEntity() {
+    public BddEntity() {
     }
 
-    public URLEntity(
+    public BddEntity(
+            String id,
             String shortId,
-            String realUrl) {
+            String realUrl,
+            String token,
+            Long date) {
+        this.id = id;
         this.shortId = shortId;
         this.realUrl = realUrl;
+        this.token = token;
+        this.date = date;
     }
 
-    public UUID getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -59,11 +64,11 @@ public class URLEntity {
         this.token = token;
     }
 
-    public String getDate() {
+    public Long getDate() {
         return this.date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Long date) {
         this.date = date;
     }
 }

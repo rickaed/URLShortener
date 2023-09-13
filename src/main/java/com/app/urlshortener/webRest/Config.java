@@ -8,10 +8,11 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:application.properties")
 public class Config {
     
-    @Value("${app.bdd.path}")
+    @Value("${bddPath}")
     private String bddPath;
     
     public String getBddPath() {
         return bddPath;
     }
+    
 }

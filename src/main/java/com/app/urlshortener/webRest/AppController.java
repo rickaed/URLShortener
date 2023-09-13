@@ -7,20 +7,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.urlshortener.url.UrlDto;
+import com.app.urlshortener.url.UrlService;
+
 
 @RestController
 public class AppController {
+    private UrlService urlService;
+
+    public AppController(UrlService urlService) {
+        this.urlService = urlService;
+    }
 
     // create link
     @PostMapping("/links")
-    public ResponseEntity<?> createShortUrl(@RequestBody UrlDto url) {
+    public ResponseEntity<?> createShortUrl(@RequestBody String url) {
+        return urlService.response(url);
         // urlService
         // message de retour
-        return null;
+        
     }
 
     // redirect url
