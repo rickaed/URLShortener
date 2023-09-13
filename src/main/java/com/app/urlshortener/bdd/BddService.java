@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 @Service
 public class BddService {
    private  BddRepository bddRepository;
-   private final Config config;
    public BddService(BddRepository bddRepository) {
       this.bddRepository = bddRepository;
    }
