@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.stereotype.Service;
 
-import com.app.urlshortener.webRest.Config;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
@@ -54,29 +53,7 @@ public class BddService {
 
    }
 
-   // JSONArray jsonBdd = (JSONArray) parser.parse(new
-   // FileReader(config.getBddPath()));
-
-   // for (Object el : jsonBdd)
-   // {
-   // JSONObject person = (JSONObject) el;
-
-   // String name = (String) person.get("name");
-   // System.out.println(name);
-
-   // String city = (String) person.get("city");
-   // System.out.println(city);
-
-   // String job = (String) person.get("job");
-   // System.out.println(job);
-
-   // JSONArray cars = (JSONArray) person.get("cars");
-
-   // for (Object c : cars)
-   // {
-   // System.out.println(c+"");
-   // }
-   // }
+  
 
 
 
