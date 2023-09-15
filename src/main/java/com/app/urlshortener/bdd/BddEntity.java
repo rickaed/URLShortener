@@ -1,10 +1,11 @@
 package com.app.urlshortener.bdd;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BddEntity {
+public class BddEntity implements Serializable {
 
     private String id = UUID.randomUUID().toString();
     @JsonProperty("short-id")

@@ -22,11 +22,8 @@ public class AppController {
 
     // create link
     @PostMapping("/links")
-    public ResponseEntity<?> createShortUrl(@RequestBody String url) {
-        return urlService.response(url);
-        // urlService
-        // message de retour
-        
+    public ResponseEntity<?> createShortUrl(@RequestBody String urlToAdd) {
+        return urlService.response(urlToAdd);        
     }
 
     // redirect url
