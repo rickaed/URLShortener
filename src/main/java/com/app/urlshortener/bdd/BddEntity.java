@@ -1,13 +1,12 @@
 package com.app.urlshortener.bdd;
 
-import java.io.Serializable;
-import java.util.UUID;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BddEntity implements Serializable {
+public class BddEntity {
 
-    private String id = UUID.randomUUID().toString();
+    private String id;
     @JsonProperty("short-id")
     private String shortId;
     @JsonProperty("real-url")
@@ -15,7 +14,7 @@ public class BddEntity implements Serializable {
     @JsonProperty("removal-Token")
     private String token;
     @JsonProperty("access-date")
-    private Long date;
+    private Date date;
 
     public BddEntity() {
     }
@@ -65,11 +64,11 @@ public class BddEntity implements Serializable {
         this.token = token;
     }
 
-    public Long getDate() {
+    public Date getDate() {
         return this.date;
     }
 
-    public void setDate(Long date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

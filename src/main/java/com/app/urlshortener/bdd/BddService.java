@@ -1,20 +1,17 @@
 package com.app.urlshortener.bdd;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.app.urlshortener.webRest.Config;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 
 @Service
 public class BddService {
@@ -27,39 +24,87 @@ public class BddService {
       this.config = config;
    }
 
-   // ecrire en bdd
-   public void addUrlToBdd(String id, String shortId, String realUrl, String token, Long date) {
-      BddEntity newUrl = new BddEntity(id, shortId, realUrl, token, date);
-      try (FileWriter fWriter = new FileWriter(config.getBddPath());
-            ObjectWriter oos = new ObjectWriter(fWriter)) {
-         oos.writeObject(newUrl);
-      } catch (FileNotFoundException e) {
-         // creer le fichier
+   // ecrire en bdd ??
+   public void jsonWriter(String longUrl) {
+      File myBdd = new File(config.getBddPath());
+      BddEntity newEntity = new BddEntity();
+      newEntity.setId(UUID.randomUUID().toString());
+      newEntity.setShortUrl(" methode à creer base64 *2 xxxxXXXX !!!!");
+      newEntity.setRealUrl(longUrl);
+      newEntity.setToken("token a creer par methode");
+      newEntity.setDate(new Date());
+
+      ObjectMapper mapper = new ObjectMapper();
+
+      try {
+
+         // Writing to a file
+         mapper.writeValue(myBdd, newEntity);
+
       } catch (IOException e) {
-         // TODO Auto-generated catch block
          e.printStackTrace();
       }
+
    }
 
-   // lire en bdd
-   public void readinBdd(String id, String shortId, String realUrl, String token, Long date) {
-      BddEntity newUrl = new BddEntity(id, shortId, realUrl, token, date);
-      try (FileInputStream fis = new FileInputStream(config.getBddPath());
-            ObjectInputStream ois = new ObjectInputStream(fis)) {
-         ois.writeObject(newUrl);
-      } catch (FileNotFoundException e) {
-         // creer le fichier
+   // lire en bdd ???
+   public void jsonReader() {
+      ObjectMapper objectMapper = new ObjectMapper();
+      File myBdd = new File(config.getBddPath());
+
+      try {
+         BddEntity urlBdd = objectMapper.readValue(myBdd, BddEntity.class);
+
       } catch (IOException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
    }
+   // // ecrire en bdd
+   // public void addUrlToBdd(String id, String shortId, String realUrl, String
+   // token, Long date) {
+   // BddEntity newUrl = new BddEntity(id, shortId, realUrl, token, date);
+   // try (FileWriter fWriter = new FileWriter(config.getBddPath());
+   // ObjectWriter oos = new ObjectWriter(fWriter)) {
+   // oos.writeObject(newUrl);
+   // } catch (FileNotFoundException e) {
+   // // creer le fichier
+   // } catch (IOException e) {
+   // // TODO Auto-generated catch block
+   // e.printStackTrace();
+   // }
+   // }
+
+   // // lire en bdd
+   // public void readInBdd(String id, String shortId, String realUrl, String
+   // token, Long date) {
+   // BddEntity newUrl = new BddEntity(id, shortId, realUrl, token, date);
+   // try (FileInputStream fis = new FileInputStream(config.getBddPath());
+   // ObjectInputStream ois = new ObjectInputStream(fis)) {
+   // ois.writeObject(newUrl);
+   // } catch (FileNotFoundException e) {
+   // // creer le fichier
+   // } catch (IOException e) {
+   // // TODO Auto-generated catch block
+   // e.printStackTrace();
+   // }
+   // }
 
    public boolean exist(String longUrl) {
-      /**
-       * ouvrir bdd
-       * bddrepo.findByLongUrl(url)
-       */
+      boolean exist = false;
+      File myBdd = new File(config.getBddPath());
+      ObjectMapper mapper = new ObjectMapper();
+      try {
+         Map<String, Object> BddEntity = mapper.readValue(myBdd, new TypeReference<>() {
+         });
+         if (BddEntity.get("realUrl").equals(longUrl)) {
+            exist = true;
+         }
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+
+      return exist;
    }
 
 }
