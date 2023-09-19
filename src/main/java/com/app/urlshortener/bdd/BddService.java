@@ -75,7 +75,7 @@ public class BddService {
    public static String genString(int size) {
       int leftLimit = 48; // numeral '0'
       int rightLimit = 122; // letter 'z'
-      int targetStringLength = 8;
+      int targetStringLength = size;
       Random random = new Random();
 
       String generatedString = random.ints(leftLimit, rightLimit + 1)
