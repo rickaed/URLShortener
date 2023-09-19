@@ -16,17 +16,18 @@ public class BddRepository {
 
     // findByUrl
     public ResponseEntity<?> findByLongUrl(String longUrl) {
-        if (bddService.exist(longUrl)) {
+        if (!bddService.exist(longUrl)) {
+            saveUrl(longUrl);
+        } else {
             ResponseEntity<?> invalidUrl = new ResponseEntity<>("invalid url", HttpStatus.BAD_REQUEST);
             return invalidUrl;
-        } else {
-            saveUrl(longUrl);
         }
         return null;
     }
 
     // saveUrl
     public void saveUrl(String longUrl) {
+        // bddService.urlShorter()
 
     }
 

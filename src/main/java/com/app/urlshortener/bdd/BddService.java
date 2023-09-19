@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class BddService {
       File myBdd = new File(config.getBddPath());
       BddEntity newEntity = new BddEntity();
       newEntity.setId(UUID.randomUUID().toString());
-      newEntity.setShortUrl(" methode à creer base64 *2 xxxxXXXX !!!!");
+      newEntity.setShortUrl(urlShorter());
       newEntity.setRealUrl(longUrl);
       newEntity.setToken("token a creer par methode");
       newEntity.setDate(new Date());
@@ -60,6 +61,23 @@ public class BddService {
          e.printStackTrace();
       }
    }
+
+   public static String urlShorter() {
+      int leftLimit = 48; // numeral '0'
+      int rightLimit = 122; // letter 'z'
+      int targetStringLength = 8;
+      Random random = new Random();
+
+      String generatedString = random.ints(leftLimit, rightLimit + 1)
+            .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+            .limit(targetStringLength)
+            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+            .toString();
+
+      return generatedString;
+   }
+
+
    // // ecrire en bdd
    // public void addUrlToBdd(String id, String shortId, String realUrl, String
    // token, Long date) {
