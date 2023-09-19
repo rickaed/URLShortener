@@ -24,7 +24,7 @@ public class BddEntity {
             String shortId,
             String realUrl,
             String token,
-            Long date) {
+            Date date) {
         this.id = id;
         this.shortId = shortId;
         this.realUrl = realUrl;

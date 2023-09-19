@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.app.urlshortener.webRest.Config;
@@ -26,13 +29,13 @@ public class BddService {
    }
 
    // ecrire en bdd ??
-   public void jsonWriter(String longUrl) {
+   public ResponseEntity<?> jsonWriter(String longUrl) {
       File myBdd = new File(config.getBddPath());
       BddEntity newEntity = new BddEntity();
       newEntity.setId(UUID.randomUUID().toString());
-      newEntity.setShortUrl(urlShorter());
+      newEntity.setShortUrl(genString(8));
       newEntity.setRealUrl(longUrl);
-      newEntity.setToken("token a creer par methode");
+      newEntity.setToken(genString(40));
       newEntity.setDate(new Date());
 
       ObjectMapper mapper = new ObjectMapper();
@@ -45,6 +48,11 @@ public class BddService {
       } catch (IOException e) {
          e.printStackTrace();
       }
+       HashMap<String, String> map = new HashMap<String, String>();
+         map.put("id",newEntity.getId());
+         map.put("short-id",newEntity.getShortUrl() );
+         map.put("real-url",newEntity.getRealUrl());
+        return new ResponseEntity<>(map,HttpStatus.CREATED) ;
 
    }
 
@@ -62,7 +70,9 @@ public class BddService {
       }
    }
 
-   public static String urlShorter() {
+   // generation d'une suite de caractere alpohanumerique aléatoire 
+   // d'une longueur donnée
+   public static String genString(int size) {
       int leftLimit = 48; // numeral '0'
       int rightLimit = 122; // letter 'z'
       int targetStringLength = 8;
@@ -76,7 +86,6 @@ public class BddService {
 
       return generatedString;
    }
-
 
    // // ecrire en bdd
    // public void addUrlToBdd(String id, String shortId, String realUrl, String

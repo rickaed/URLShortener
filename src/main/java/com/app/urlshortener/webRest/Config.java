@@ -10,13 +10,13 @@ public class Config {
 
     @Value("${bddPath}")
     private String bddPath;
-
+    @Value("${tokenSecret}")
+    private String secretCode;
     public String getBddPath() {
         return bddPath;
     }
 
-    @Value("${tokenSecret}")
-    private String secretCode;
+
 
     public String getSecretCode() {
         return this.secretCode;
