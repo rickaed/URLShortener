@@ -1,33 +1,33 @@
 package com.app.urlshortener.bdd;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import java.io.File;
+import java.io.IOException;
+
 import org.springframework.stereotype.Repository;
+
+import com.app.urlshortener.webRest.Config;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Repository
 public class BddRepository {
-    private BddEntity bddEntity;
-    private BddService bddService;
+    private Config config;
 
-    public BddRepository(BddEntity bddEntity, BddService bddService) {
-        this.bddEntity = bddEntity;
-        this.bddService = bddService;
+    public BddRepository(Config config) {
+        this.config = config;
     }
 
     // findByUrl
-    public ResponseEntity<?> findByLongUrl(String longUrl) {
-        if (!bddService.exist(longUrl)) {
-            saveUrl(longUrl);
-        } else {
-            ResponseEntity<?> invalidUrl = new ResponseEntity<>("invalid url", HttpStatus.BAD_REQUEST);
-            return invalidUrl;
-        }
-        return null;
+    public void findByLongUrl(String longUrl) {
+
     }
 
     // saveUrl
-    public void saveUrl(String longUrl) {
-        // bddService.urlShorter()
+    public void saveUrl(BddEntity newEntity) throws StreamWriteException, DatabindException, IOException {
+        File myBdd = new File(config.getBddPath());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(myBdd, newEntity);
 
     }
 
