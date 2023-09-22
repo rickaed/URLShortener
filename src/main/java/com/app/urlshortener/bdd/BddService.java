@@ -1,21 +1,20 @@
 package com.app.urlshortener.bdd;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.app.urlshortener.webRest.Config;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,25 +23,40 @@ public class BddService {
    private BddRepository bddRepository;
    private Config config;
 
+  
+
    public BddService(BddRepository bddRepository, Config config) {
       this.bddRepository = bddRepository;
       this.config = config;
    }
 
-   
+   public HashMap<String, String> createUrlEntity(String longUrl)
+         throws StreamWriteException, DatabindException, IOException {
+
+      UrlEntity newEntity = new UrlEntity();
+      newEntity.setId(UUID.randomUUID().toString());
+      newEntity.setShortId(genString(8));
+      newEntity.setRealUrl(longUrl);
+      newEntity.setToken(genString(40));
+      newEntity.setDate(new Date());
+
+      bddRepository.saveUrl(newEntity);
+
+      HashMap<String, String> map = new HashMap<String, String>();
+      map.put("id", newEntity.getId());
+      map.put("short-url", newEntity.getShortId());
+      map.put("real-url", newEntity.getRealUrl());
+
+      return map;
+   }
 
    // lire en bdd ???
-   public void jsonReader() {
+   public void jsonReader() throws StreamReadException, DatabindException, IOException {
       ObjectMapper objectMapper = new ObjectMapper();
       File myBdd = new File(config.getBddPath());
 
-      try {
-         BddEntity urlBdd = objectMapper.readValue(myBdd, BddEntity.class);
+      UrlEntity urlBdd = objectMapper.readValue(myBdd, UrlEntity.class);
 
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
    }
 
    // generation d'une suite de caractere alpohanumerique aléatoire
@@ -92,35 +106,32 @@ public class BddService {
    // }
    // }
 
-   public boolean exist(String longUrl) throws StreamReadException, DatabindException, IOException {
-      File myBdd = new File(config.getBddPath());
+   public void exist(String longUrl) throws StreamReadException, DatabindException, IOException {
+      System.out.println("@@@@@@@@@@@@@@@@@ exist? : " + longUrl);
       ObjectMapper mapper = new ObjectMapper();
-      Map<String, Object> BddEntity = mapper.readValue(myBdd, new TypeReference<>() {
-      });
-      if (BddEntity.get("realUrl").equals(longUrl)) {
-         return true;
-      }
-      return false;
+      /**
+       * lire la BDD
+       * parcourir la bdd
+       * filtrer longUrl de la bdd
+       * si -1 -> false
+       * sinon true
+       */
+      List<UrlEntity> urlEntities = bddRepository.readAllUrlEntities();
+      
+      UrlEntity urlEntity = mapper.readValue(new File(config.getBddPath()), UrlEntity.class);
 
-   }
+      // File myBdd = new File("../../../../bdd.json");
+      // InputStream is = BddEntity.class.getResourceAsStream(myBdd);
+      // Map<String, Object> BddEntity = mapper.readValue(myBdd, new TypeReference<>()
+      // {
+      // });
+      // System.out.println("@@@@@@@@@@@@@@@@@ " + BddEntity);
 
-   public HashMap<String, String> createUrlEntity(String longUrl)
-         throws StreamWriteException, DatabindException, IOException {
-      BddEntity newEntity = new BddEntity();
-      newEntity.setId(UUID.randomUUID().toString());
-      newEntity.setShortUrl(genString(8));
-      newEntity.setRealUrl(longUrl);
-      newEntity.setToken(genString(40));
-      newEntity.setDate(new Date());
+      // if (BddEntity.get("realUrl").equals(longUrl)) {
+      // return true;
+      // }
+      // return false;
 
-      bddRepository.saveUrl(newEntity);
-
-      HashMap<String, String> map = new HashMap<String, String>();
-      map.put("id", newEntity.getId());
-      map.put("short-id", newEntity.getShortUrl());
-      map.put("real-url", newEntity.getRealUrl());
-
-      return map;
    }
 
 }
@@ -157,7 +168,7 @@ public class BddService {
 // serializers) throws IOException {
 // jgen.writeStartObject();
 // jgen.writeStringField("id", value.getId());
-// jgen.writeStringField("short-id", value.getShortUrl());
+// jgen.writeStringField("short-id", value.getShortId());
 // jgen.writeStringField("real-url", value.getRealUrl());
 // jgen.writeStringField("removal-Token", value.getToken());
 // jgen.writeNumberField("access-date", value.getDate());

@@ -1,8 +1,7 @@
 package com.app.urlshortener.webRest;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.urlshortener.bdd.BddRepository;
 import com.app.urlshortener.bdd.BddService;
+import com.app.urlshortener.bdd.UrlEntity;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 
@@ -22,24 +23,34 @@ import com.fasterxml.jackson.databind.DatabindException;
 public class AppController {
     private AppService appService;
     private BddService bddService;
+    private BddRepository bddRepository;
 
-    public AppController(AppService appService, BddService bddService) {
+    public AppController(AppService appService, BddService bddService, BddRepository bddRepository) {
         this.appService = appService;
         this.bddService = bddService;
+        this.bddRepository = bddRepository;
+    }
+
+    /********************* POUR TEST *********************/
+    @GetMapping("/readAll")
+    public List<UrlEntity> readAll() throws StreamReadException, DatabindException, IOException {
+        return bddRepository.readAllUrlEntities();
     }
 
     // create link
     @PostMapping("/links")
-    public ResponseEntity<?> createShortUrl(@RequestBody String urlToAdd)
-            throws URISyntaxException, StreamReadException, DatabindException, IOException {
+    public ResponseEntity<?> createShortId(@RequestBody String urlToAdd) {
         ResponseEntity<?> response = new ResponseEntity<>("invalid url", HttpStatus.BAD_REQUEST);
+        urlToAdd = urlToAdd.replace("\"", "");
         // si format url valide
         if (appService.validUrl(urlToAdd)) {
+            System.out.println("@@@@@@@@@@@@@@@@@ url valide");
             // si l'url n'existe pas en bdd
             if (!bddService.exist(urlToAdd)) {
+                System.out.println("@@@@@@@@@@@@@@ url not exist");
 
-                HashMap<String, String> body = bddService.createUrlEntity(urlToAdd);
-                response = new ResponseEntity<>(body, HttpStatus.CREATED);
+                HashMap<String, String> bodyrep = bddService.createUrlEntity(urlToAdd);
+                response = new ResponseEntity<>(bodyrep, HttpStatus.CREATED);
             }
         }
         return response;

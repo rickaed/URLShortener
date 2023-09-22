@@ -5,7 +5,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 //@
-public class BddEntity {
+public class UrlEntity {
 
     private String id;
     @JsonProperty("short-id")
@@ -17,10 +17,10 @@ public class BddEntity {
     @JsonProperty("access-date")
     private Date date;
 
-    public BddEntity() {
+    public UrlEntity() {
     }
 
-    public BddEntity(
+    public UrlEntity(
             String id,
             String shortId,
             String realUrl,
@@ -41,11 +41,11 @@ public class BddEntity {
         this.id = id;
     }
 
-    public String getShortUrl() {
+    public String getShortId() {
         return this.shortId;
     }
 
-    public void setShortUrl(String shortId) {
+    public void setShortId(String shortId) {
         this.shortId = shortId;
     }
 
