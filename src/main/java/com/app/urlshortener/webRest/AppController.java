@@ -5,6 +5,7 @@ import com.app.urlshortener.bdd.BddService;
 import com.app.urlshortener.bdd.UrlEntity;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,6 @@ public class AppController {
     private AppService appService;
     private BddService bddService;
     private BddRepository bddRepository;
-
 
     public AppController(AppService appService, BddService bddService, BddRepository bddRepository) {
         this.appService = appService;
@@ -46,8 +46,13 @@ public class AppController {
             if (!bddService.exist(urlToAdd)) {
                 System.out.println("@@@@@@@@@@@@@@ url not exist");
 
-                HashMap<String, String> bodyrep = bddService.createUrlEntity(urlToAdd);
-                response = new ResponseEntity<>(bodyrep, HttpStatus.CREATED);
+                HashMap<String, String> answer = bddService.createUrlEntity(urlToAdd);
+                HttpHeaders responseHeader = new HttpHeaders();
+                responseHeader.set("X-Removal-Token", answer.get("X-Removal-Token"));
+                answer.remove("X-Removal-Token");
+                var responseBody = answer;
+                response = new ResponseEntity<>(responseBody, responseHeader, HttpStatus.CREATED);
+
             }
         }
         return response;

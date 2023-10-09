@@ -30,11 +30,7 @@ public class BddRepository {
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
         File urlBdd = initBdd();
         urlEntities.add(newEntity);
-        System.out.println(urlEntities);
-
-        // mapper.writeValue(urlEntities);
         mapper.writeValue(urlBdd, urlEntities);
-
     }
 
     // findById(dycotomi)
@@ -48,6 +44,7 @@ public class BddRepository {
     }
 
     /******************** POUR TEST *********************/
+
     public List<UrlEntity> readAllUrlEntities() throws IOException {
         File urlBdd = initBdd();
         ObjectMapper mapper = new ObjectMapper();
@@ -55,6 +52,7 @@ public class BddRepository {
         return mapper.readValue(urlBdd, new TypeReference<List<UrlEntity>>() {
         });
     }
+    /****************************************************/
 
     public File initBdd() throws IOException {
         File urlBdd = new File(config.getBddPath());
