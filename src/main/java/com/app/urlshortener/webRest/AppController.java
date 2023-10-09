@@ -1,23 +1,18 @@
 package com.app.urlshortener.webRest;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.app.urlshortener.bdd.BddRepository;
 import com.app.urlshortener.bdd.BddService;
 import com.app.urlshortener.bdd.UrlEntity;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.List;
 
 @RestController
 public class AppController {
@@ -25,10 +20,12 @@ public class AppController {
     private BddService bddService;
     private BddRepository bddRepository;
 
+
     public AppController(AppService appService, BddService bddService, BddRepository bddRepository) {
         this.appService = appService;
         this.bddService = bddService;
         this.bddRepository = bddRepository;
+
     }
 
     /********************* POUR TEST *********************/
@@ -39,7 +36,7 @@ public class AppController {
 
     // create link
     @PostMapping("/links")
-    public ResponseEntity<?> createShortId(@RequestBody String urlToAdd) {
+    public ResponseEntity<?> createShortId(@RequestBody String urlToAdd) throws URISyntaxException, IOException {
         ResponseEntity<?> response = new ResponseEntity<>("invalid url", HttpStatus.BAD_REQUEST);
         urlToAdd = urlToAdd.replace("\"", "");
         // si format url valide

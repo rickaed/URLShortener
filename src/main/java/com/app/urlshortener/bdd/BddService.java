@@ -1,29 +1,19 @@
 package com.app.urlshortener.bdd;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
+import com.app.urlshortener.webRest.Config;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
-import com.app.urlshortener.webRest.Config;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.core.exc.StreamWriteException;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class BddService {
-   private BddRepository bddRepository;
-   private Config config;
+   private final BddRepository bddRepository;
+   private final Config config;
 
-  
+
 
    public BddService(BddRepository bddRepository, Config config) {
       this.bddRepository = bddRepository;
@@ -31,7 +21,7 @@ public class BddService {
    }
 
    public HashMap<String, String> createUrlEntity(String longUrl)
-         throws StreamWriteException, DatabindException, IOException {
+           throws IOException {
 
       UrlEntity newEntity = new UrlEntity();
       newEntity.setId(UUID.randomUUID().toString());
@@ -51,7 +41,7 @@ public class BddService {
    }
 
    // lire en bdd ???
-   public void jsonReader() throws StreamReadException, DatabindException, IOException {
+   public void jsonReader() throws IOException {
       ObjectMapper objectMapper = new ObjectMapper();
       File myBdd = new File(config.getBddPath());
 
@@ -68,10 +58,10 @@ public class BddService {
       Random random = new Random();
 
       String generatedString = random.ints(leftLimit, rightLimit + 1)
-            .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-            .limit(targetStringLength)
-            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-            .toString();
+              .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+              .limit(targetStringLength)
+              .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+              .toString();
 
       return generatedString;
    }
@@ -106,9 +96,18 @@ public class BddService {
    // }
    // }
 
-   public void exist(String longUrl) throws StreamReadException, DatabindException, IOException {
+   public boolean exist(String longUrl) throws IOException {
       System.out.println("@@@@@@@@@@@@@@@@@ exist? : " + longUrl);
       ObjectMapper mapper = new ObjectMapper();
+      List<UrlEntity> urlEntities= bddRepository.readAllUrlEntities();
+      boolean present = false;
+      for (UrlEntity urlEntity : urlEntities) {
+         if (urlEntity.getRealUrl().equals(longUrl)) {
+            present = true;
+            break;
+         }
+      }
+
       /**
        * lire la BDD
        * parcourir la bdd
@@ -116,22 +115,9 @@ public class BddService {
        * si -1 -> false
        * sinon true
        */
-      List<UrlEntity> urlEntities = bddRepository.readAllUrlEntities();
-      
-      UrlEntity urlEntity = mapper.readValue(new File(config.getBddPath()), UrlEntity.class);
 
-      // File myBdd = new File("../../../../bdd.json");
-      // InputStream is = BddEntity.class.getResourceAsStream(myBdd);
-      // Map<String, Object> BddEntity = mapper.readValue(myBdd, new TypeReference<>()
-      // {
-      // });
-      // System.out.println("@@@@@@@@@@@@@@@@@ " + BddEntity);
 
-      // if (BddEntity.get("realUrl").equals(longUrl)) {
-      // return true;
-      // }
-      // return false;
-
+      return present;
    }
 
 }

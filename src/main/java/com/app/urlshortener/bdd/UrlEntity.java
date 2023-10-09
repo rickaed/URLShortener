@@ -1,8 +1,8 @@
 package com.app.urlshortener.bdd;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Date;
 
 //@
 public class UrlEntity {
@@ -75,12 +75,12 @@ public class UrlEntity {
 
     @Override
     public String toString() {
-        return "BddEntity{" +
+        return "BddEntity{" +"\n"+
                 "short-id :'" + shortId + '\'' +
-                ", real-url :'" + realUrl + '\'' +
-                ", removal-Token :'" + token + '\'' +
-                ", access-date :" + date +
-                ", id :'" + id + '\'' +
+                ",\n real-url :'" + realUrl + '\'' +
+                ",\n removal-Token :'" + token + '\'' +
+                ",\n access-date :" + date +
+                ",\n id :'" + id + '\'' +"\n"+
                 '}';
     }
 }
