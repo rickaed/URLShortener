@@ -6,11 +6,11 @@ import com.app.urlshortener.bdd.JsonGest;
 import com.app.urlshortener.bdd.UrlEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
@@ -68,12 +68,22 @@ public class AppController {
         return response;
     }
 
+   
+
     // redirect url
     @GetMapping("/{shortId}")
-    public void responseUrl(@PathVariable String shortId) {
+    public ResponseEntity<?> redirect(@PathVariable String shortId) throws IOException, URISyntaxException {
 
-        // java.net.URI location = new java.net.URI("../index.jsp?msg=A_User_Added");
-        // return Response.temporaryRedirect(location).build()
+        if (bddService.exist(shortId)) {
+           
+            URI redirect = new URI(bddRepository.findByShortId(shortId));
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(redirect);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
+
+        }
+        return null;
+
     }
 
     // delete url

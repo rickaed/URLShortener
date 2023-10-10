@@ -42,6 +42,20 @@ public class BddRepository {
         return null;
     }
 
+    public String findByShortId(String shortId) throws IOException {
+        List<UrlEntity> urlEntities = jsonFile.readAllUrlEntities();
+        String realUrl = "";
+        for (UrlEntity urlEntity : urlEntities) {
+            if (urlEntity.getShortId().equals(shortId)) {
+                realUrl = urlEntity.getRealUrl();
+                // new date
+            }
+
+        }
+        return realUrl;
+
+    }
+
     // deleteUselessUrl
     public void deleteUrl(UrlEntity urlEntity) throws IOException {
         List<UrlEntity> urlEntities = jsonFile.readAllUrlEntities();

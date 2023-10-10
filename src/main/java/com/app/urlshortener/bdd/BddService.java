@@ -46,15 +46,13 @@ public class BddService {
     * 
     * @param lookingFor issue de 2 fonction selon le besoin
     *                   soit l'url, soit l'id
-    * @return
-    * @throws IOException
     */
    public boolean exist(String lookingFor) throws IOException {
       System.out.println("@@@@@@@@@@@@@@@@@ exist? : " + lookingFor);
       boolean present = false;
       List<UrlEntity> urlEntities = jsonfile.readAllUrlEntities();
       for (UrlEntity urlEntity : urlEntities) {
-         if (urlEntity.getRealUrl().equals(lookingFor) || urlEntity.getId().equals(lookingFor)) {
+         if (urlEntity.getRealUrl().equals(lookingFor) || urlEntity.getId().equals(lookingFor)||urlEntity.getShortId().equals(lookingFor)) {
             present = true;
             break;
          }
@@ -65,11 +63,7 @@ public class BddService {
 
    public boolean tokenValidator(UrlEntity urlEntity, String headToken) {
       System.out.println("@@@@@@@@ token " + headToken);
-      boolean validate = false;
-      if (urlEntity.getToken().equals(headToken)) {
-         validate = true;
-      }
-      return validate;
+       return urlEntity.getToken().equals(headToken);
    }
 
 }
