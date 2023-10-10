@@ -1,9 +1,9 @@
 package com.app.urlshortener.webRest;
 
+import org.springframework.stereotype.Service;
+
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import org.springframework.stereotype.Service;
 
 
 @Service
@@ -16,11 +16,7 @@ public class AppService {
     final  boolean validUrl(String longUrl) throws URISyntaxException {
         
         URI incomingUrl = new URI(longUrl);
-        if (incomingUrl.getScheme().equals("http") || incomingUrl.getScheme().equals("https")) {
-            return true;
-        } else {
-            return false;
-        }
+        return incomingUrl.getScheme().equals("http") || incomingUrl.getScheme().equals("https");
     }
 
 }

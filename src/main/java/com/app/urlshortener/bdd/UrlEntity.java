@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
-//@
 public class UrlEntity {
 
     private String id;
@@ -75,12 +74,13 @@ public class UrlEntity {
 
     @Override
     public String toString() {
-        return "BddEntity{" +"\n"+
+        return "{" + "\n" +
                 "short-id :'" + shortId + '\'' +
                 ",\n real-url :'" + realUrl + '\'' +
                 ",\n removal-Token :'" + token + '\'' +
                 ",\n access-date :" + date +
-                ",\n id :'" + id + '\'' +"\n"+
+                ",\n id :'" + id + '\'' + "\n" +
                 '}';
     }
+
 }

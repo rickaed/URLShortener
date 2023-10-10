@@ -1,22 +1,19 @@
 package com.app.urlshortener.bdd;
 
-import com.app.urlshortener.webRest.Config;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
 @Repository
 public class BddRepository {
-    private final Config config;
+    private final JsonGest jsonFile;
 
-    public BddRepository(Config config) {
-        this.config = config;
+    public BddRepository(JsonGest jsonFile) {
+        this.jsonFile = jsonFile;
     }
 
     // findByUrl
@@ -26,44 +23,35 @@ public class BddRepository {
 
     // saveUrl
     public void saveUrl(UrlEntity newEntity) throws IOException {
-        List<UrlEntity> urlEntities = readAllUrlEntities();
+        List<UrlEntity> urlEntities = jsonFile.readAllUrlEntities();
         ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-        File urlBdd = initBdd();
+        File urlBdd = jsonFile.initBdd();
         urlEntities.add(newEntity);
         mapper.writeValue(urlBdd, urlEntities);
     }
 
-    // findById(dycotomi)
-    public void findById() {
-
+    // findById
+    public UrlEntity findById(String id) throws IOException {
+        List<UrlEntity> urlEntities = jsonFile.readAllUrlEntities();
+        for (UrlEntity urlEntity : urlEntities) {
+            if (urlEntity.getId().equals(id)) {
+                System.out.println("@@@@@@@@ mon elem à supp " + urlEntity);
+                return urlEntity;
+            }
+        }
+        return null;
     }
 
     // deleteUselessUrl
-    public void deleteUrl() {
+    public void deleteUrl(UrlEntity urlEntity) throws IOException {
+        List<UrlEntity> urlEntities = jsonFile.readAllUrlEntities();
+        ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+        File urlBdd = jsonFile.initBdd();
+        System.out.println(urlEntities.remove(urlEntity));
 
-    }
-
-    /******************** POUR TEST *********************/
-
-    public List<UrlEntity> readAllUrlEntities() throws IOException {
-        File urlBdd = initBdd();
-        ObjectMapper mapper = new ObjectMapper();
-
-        return mapper.readValue(urlBdd, new TypeReference<List<UrlEntity>>() {
-        });
-    }
-    /****************************************************/
-
-    public File initBdd() throws IOException {
-        File urlBdd = new File(config.getBddPath());
-        // Create the file
-        if (urlBdd.createNewFile()) {
-            // write array
-            FileWriter writer = new FileWriter(urlBdd);
-            writer.write("[]");
-            writer.close();
-        }
-        return urlBdd;
+        urlEntities.removeIf(urlEntity1 -> urlEntity1.getId().equals(urlEntity.getId()));
+        System.out.println(urlEntities);
+        mapper.writeValue(urlBdd, urlEntities);
     }
 
     // sortUrlByShirtId(alphabetique)
