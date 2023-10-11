@@ -48,9 +48,4 @@ public class JsonGest {
         });
     }
 
-    public void write(String url) {
-
-    }
-
-
 }

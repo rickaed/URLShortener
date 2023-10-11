@@ -1,11 +1,13 @@
 package com.app.urlshortener.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -45,11 +47,22 @@ public class BddRepository {
     public String findByShortId(String shortId) throws IOException {
         List<UrlEntity> urlEntities = jsonFile.readAllUrlEntities();
         String realUrl = "";
+        int i = 0;
         for (UrlEntity urlEntity : urlEntities) {
             if (urlEntity.getShortId().equals(shortId)) {
                 realUrl = urlEntity.getRealUrl();
-                // new date
+                urlEntity.setDate(new Date());
+                /******** a decouper ********/ 
+                // updateDate()
+                // save()
+                urlEntities.set(i, urlEntity);
+                //SAVE
+                ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+                File urlBdd = jsonFile.initBdd();
+                mapper.writeValue(urlBdd, urlEntities);
+                // System.out.println(urlEntities);
             }
+            i++;
 
         }
         return realUrl;

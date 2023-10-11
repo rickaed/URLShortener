@@ -75,7 +75,7 @@ public class AppController {
     public ResponseEntity<?> redirect(@PathVariable String shortId) throws IOException, URISyntaxException {
 
         if (bddService.exist(shortId)) {
-           
+            
             URI redirect = new URI(bddRepository.findByShortId(shortId));
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setLocation(redirect);

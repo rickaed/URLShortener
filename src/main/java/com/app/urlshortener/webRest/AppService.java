@@ -18,5 +18,6 @@ public class AppService {
         URI incomingUrl = new URI(longUrl);
         return incomingUrl.getScheme().equals("http") || incomingUrl.getScheme().equals("https");
     }
+    
 
 }
