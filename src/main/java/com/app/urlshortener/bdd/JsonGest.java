@@ -1,6 +1,6 @@
 package com.app.urlshortener.bdd;
 
-import com.app.urlshortener.webRest.Config;
+import com.app.urlshortener.webrest.Config;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;

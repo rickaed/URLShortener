@@ -1,4 +1,4 @@
-package com.app.urlshortener.webRest;
+package com.app.urlshortener.webrest;
 
 import com.app.urlshortener.bdd.BddRepository;
 import com.app.urlshortener.bdd.BddService;
@@ -37,18 +37,21 @@ public class AppController {
     }
 
     /*****************************************************/
-
+    // response status
     // create link
     @PostMapping("/links")
     public ResponseEntity<?> createShortId(@RequestBody String urlToAdd) throws URISyntaxException, IOException {
+        System.out.println(urlToAdd);
         ResponseEntity<?> response = new ResponseEntity<>("invalid url", HttpStatus.BAD_REQUEST);
         urlToAdd = urlToAdd.replace("\"", "");
+        // return urlService.response(urlToAdd);
         // si format url valide
+        // controller advice
         if (appService.validUrl(urlToAdd)) {
-            // System.out.println("@@@@@@@@@@@@@@@@@ url valide");
+            System.out.println("@@@@@@@@@@@@@@@@@ url valide");
             // si l'url n'existe pas en bdd
             if (!bddService.exist(urlToAdd)) {
-                // System.out.println("@@@@@@@@@@@@@@ url not exist");
+                System.out.println("@@@@@@@@@@@@@@ url not exist");
 
                 UrlEntity newEntity = bddService.createUrlEntity(urlToAdd);
                 bddRepository.saveUrl(newEntity);
@@ -68,14 +71,12 @@ public class AppController {
         return response;
     }
 
-   
-
     // redirect url
     @GetMapping("/{shortId}")
     public ResponseEntity<?> redirect(@PathVariable String shortId) throws IOException, URISyntaxException {
 
         if (bddService.exist(shortId)) {
-            
+
             URI redirect = new URI(bddRepository.findByShortId(shortId));
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setLocation(redirect);

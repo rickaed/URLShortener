@@ -1,4 +1,4 @@
-package com.app.urlshortener.webRest;
+package com.app.urlshortener.webrest;
 
 import org.springframework.stereotype.Service;
 

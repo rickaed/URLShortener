@@ -1,4 +1,4 @@
-package com.app.urlshortener.webRest;
+package com.app.urlshortener.webrest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
