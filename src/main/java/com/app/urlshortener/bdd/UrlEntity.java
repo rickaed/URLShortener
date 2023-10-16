@@ -2,28 +2,28 @@ package com.app.urlshortener.bdd;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.net.URI;
 import java.util.Date;
 
-public class UrlEntity {
+public final class UrlEntity {
 
     private String id;
     @JsonProperty("short-id")
     private String shortId;
     @JsonProperty("real-url")
-    private String realUrl;
+    private URI realUrl;
     @JsonProperty("removal-Token")
     private String token;
     @JsonProperty("access-date")
     private Date date;
 
-    public UrlEntity() {
-    }
+    public UrlEntity(){}
 
     public UrlEntity(
-            String id,
-            String shortId,
-            String realUrl,
-            String token,
+            final String id,
+            final String shortId,
+            final URI realUrl,
+            final String token,
             Date date) {
         this.id = id;
         this.shortId = shortId;
@@ -36,7 +36,7 @@ public class UrlEntity {
         return this.id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -44,23 +44,23 @@ public class UrlEntity {
         return this.shortId;
     }
 
-    public void setShortId(String shortId) {
+    public void setShortId(final String shortId) {
         this.shortId = shortId;
     }
 
-    public String getRealUrl() {
+    public URI getRealUrl() {
         return this.realUrl;
     }
 
-    public void setRealUrl(String realUrl) {
-        this.realUrl = realUrl;
+    public void setRealUrl(final URI newUrl) {
+        this.realUrl = newUrl;
     }
 
     public String getToken() {
         return this.token;
     }
 
-    public void setToken(String token) {
+     public void setToken(final String token) {
         this.token = token;
     }
 
@@ -73,7 +73,7 @@ public class UrlEntity {
     }
 
     @Override
-    public String toString() {
+    public  String toString() {
         return "{" + "\n" +
                 "short-id :'" + shortId + '\'' +
                 ",\n real-url :'" + realUrl + '\'' +

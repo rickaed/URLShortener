@@ -1,112 +1,106 @@
 package com.app.urlshortener.webrest;
 
 import com.app.urlshortener.bdd.BddRepository;
-import com.app.urlshortener.bdd.BddService;
-import com.app.urlshortener.bdd.JsonGest;
+import com.app.urlshortener.bdd.UrlService;
+import com.app.urlshortener.personalexception.InvalidTokenException;
+import com.app.urlshortener.personalexception.InvalidUrlException;
+import com.app.urlshortener.personalexception.MissingUrlException;
 import com.app.urlshortener.bdd.UrlEntity;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.text.html.parser.Entity;
+
 @RestController
 public class AppController {
-    private final AppService appService;
-    private final BddService bddService;
+    private final UrlService urlService;
     private final BddRepository bddRepository;
-    private final JsonGest jsonFile;
 
-    public AppController(AppService appService, BddService bddService, BddRepository bddRepository, JsonGest jsonFile) {
-        this.appService = appService;
-        this.bddService = bddService;
+    public AppController(UrlService urlService, BddRepository bddRepository) {
+        this.urlService = urlService;
         this.bddRepository = bddRepository;
-        this.jsonFile = jsonFile;
 
     }
 
     /********************* POUR TEST *********************/
     @GetMapping("/readAll")
     public List<UrlEntity> readAll() throws IOException {
-        return jsonFile.readAllUrlEntities();
+        return bddRepository.readAllUrlEntities();
     }
 
     /*****************************************************/
-    // response status
-    // create link
+
+    /**
+     * création de lien
+     * 
+     * @throws InterruptedException
+     *
+     */
     @PostMapping("/links")
-    public ResponseEntity<?> createShortId(@RequestBody String urlToAdd) throws URISyntaxException, IOException {
-        System.out.println(urlToAdd);
-        ResponseEntity<?> response = new ResponseEntity<>("invalid url", HttpStatus.BAD_REQUEST);
+
+    public ResponseEntity<?> createShortId(@RequestBody String urlToAdd)
+            throws URISyntaxException, IOException, InterruptedException {
+        System.out.println("@@@@@@@ récupération de l'url à ajouter" + urlToAdd);
         urlToAdd = urlToAdd.replace("\"", "");
-        // return urlService.response(urlToAdd);
-        // si format url valide
-        // controller advice
-        if (appService.validUrl(urlToAdd)) {
-            System.out.println("@@@@@@@@@@@@@@@@@ url valide");
-            // si l'url n'existe pas en bdd
-            if (!bddService.exist(urlToAdd)) {
-                System.out.println("@@@@@@@@@@@@@@ url not exist");
+        final URI INCOMING_URL = new URI(String.format(urlToAdd));
+        try {
+            UrlEntity newEntity = urlService.creating(INCOMING_URL);
 
-                UrlEntity newEntity = bddService.createUrlEntity(urlToAdd);
-                bddRepository.saveUrl(newEntity);
+            HashMap<String, String> responseBody = new HashMap<>();
+            responseBody.put("id", newEntity.getId());
+            responseBody.put("short-id", newEntity.getShortId());
+            responseBody.put("real-url", newEntity.getRealUrl().toString());
+            return ResponseEntity.status(HttpStatus.CREATED).header("X-Removal-Token", newEntity.getToken())
+                    .body(responseBody);
+            // return new ResponseEntity<>(responseBody, responseHeader,
+            // HttpStatus.CREATED);
 
-                HttpHeaders responseHeader = new HttpHeaders();
-                responseHeader.set("X-Removal-Token", newEntity.getToken());
+        } catch (InvalidUrlException e) {
 
-                HashMap<String, String> responseBody = new HashMap<>();
-                responseBody.put("id", newEntity.getId());
-                responseBody.put("short-id", newEntity.getShortId());
-                responseBody.put("real-url", newEntity.getRealUrl());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("invalid url");
 
-                response = new ResponseEntity<>(responseBody, responseHeader, HttpStatus.CREATED);
-
-            }
         }
-        return response;
+
     }
 
     // redirect url
     @GetMapping("/{shortId}")
-    public ResponseEntity<?> redirect(@PathVariable String shortId) throws IOException, URISyntaxException {
-
-        if (bddService.exist(shortId)) {
-
-            URI redirect = new URI(bddRepository.findByShortId(shortId));
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setLocation(redirect);
-            return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
-
-        }
-        return null;
+    public Object redirect(@PathVariable String shortId) throws IOException {
+        return urlService.exist(shortId);
 
     }
 
     // delete url
     @DeleteMapping("/links/{id}")
-    public ResponseEntity<?> delete(@RequestHeader("X-Removal-Token") String token, @PathVariable String id)
-            throws IOException {
-        ResponseEntity<?> response;
+    public ResponseEntity<?> delete(@RequestHeader("X-Removal-Token") String token, @PathVariable String id) throws IOException
+            {
+
         System.out.println("@@@@@@@ DELETE @@@@@@@");
-        if (bddService.exist(id)) {
-            UrlEntity urlEntity = bddRepository.findById(id);
-            if (bddService.tokenValidator(urlEntity, token)) {
-                System.out.println(" @@@@@@@ Token Valide");
-                bddRepository.deleteUrl(urlEntity);
-                response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                System.out.println("@@@@@@@ FORBIDDEN");
-                response = new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-        } else {
-            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            System.out.println("@@@@@@@ Not found");
+        try {
+            urlService.exist(id, token);
+            urlService.delete(id, token);
+             return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (MissingUrlException e) {
+            e.printStackTrace();
+              return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (InvalidTokenException e) {
+            e.printStackTrace();
+             return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        return response;
+
+       
+
     }
 }
