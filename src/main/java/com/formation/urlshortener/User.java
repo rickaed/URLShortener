@@ -1,4 +1,4 @@
-package com.app.urlshortener;
+package com.formation.urlshortener;
 
 import java.util.List;
 

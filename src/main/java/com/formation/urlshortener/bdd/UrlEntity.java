@@ -1,30 +1,33 @@
-package com.app.urlshortener.bdd;
+package com.formation.urlshortener.bdd;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.net.URI;
 import java.util.Date;
 
 public final class UrlEntity {
-
+    @JsonProperty("id")
     private String id;
     @JsonProperty("short-id")
     private String shortId;
     @JsonProperty("real-url")
     private URI realUrl;
-    @JsonProperty("removal-Token")
+    @JsonProperty("X-Removal-Token")
     private String token;
-    @JsonProperty("access-date")
+    @JsonProperty("last-date-access")
     private Date date;
 
-    public UrlEntity(){}
+    public UrlEntity() {
+    }
 
+    @JsonCreator
     public UrlEntity(
-            final String id,
-            final String shortId,
-            final URI realUrl,
-            final String token,
-            Date date) {
+            @JsonProperty("id") final String id,
+            @JsonProperty("short-id") final String shortId,
+            @JsonProperty("real-url") final URI realUrl,
+            @JsonProperty("X-Removal-Token") final String token,
+            @JsonProperty("last-date-access") Date date) {
         this.id = id;
         this.shortId = shortId;
         this.realUrl = realUrl;
@@ -60,7 +63,7 @@ public final class UrlEntity {
         return this.token;
     }
 
-     public void setToken(final String token) {
+    public void setToken(final String token) {
         this.token = token;
     }
 
@@ -73,12 +76,12 @@ public final class UrlEntity {
     }
 
     @Override
-    public  String toString() {
+    public String toString() {
         return "{" + "\n" +
                 "short-id :'" + shortId + '\'' +
                 ",\n real-url :'" + realUrl + '\'' +
-                ",\n removal-Token :'" + token + '\'' +
-                ",\n access-date :" + date +
+                ",\n X-Removal-Token :'" + token + '\'' +
+                ",\n last-date-access :" + date +
                 ",\n id :'" + id + '\'' + "\n" +
                 '}';
     }
