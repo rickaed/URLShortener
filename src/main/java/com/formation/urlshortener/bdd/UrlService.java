@@ -102,36 +102,14 @@ public class UrlService {
 
    }
 
-   public void existId(String id) throws MissingUrlException, IOException {
-      List<UrlEntity> urlEntities = bddRepository.readAllUrlEntities();
-      for (UrlEntity urlEntity : urlEntities) {
-         if (urlEntity.getId().equals(id)) {
-            System.out.println("@@@@@@@ compare : " + urlEntity.getId() + " " + id);
-            return;
-         }
+   
 
-      }
-      throw new MissingUrlException("Pas Trouvé");
-   }
-
-   public void delete(String id, String token) throws InvalidTokenException, IOException {
-
-      UrlEntity urlEntity = bddRepository.findById(id);
-
-      if (!tokenValidator(urlEntity, token)) {
-         throw new InvalidTokenException("bad token");
-
-      } else {
-         bddRepository.deleteUrl(urlEntity);
-
-      }
-
-   }
+  
 
    public ResponseEntity<?> redirectBuilder(String shortId, List<UrlEntity> urlEntites)
          throws IOException {
 
-      URI redirect = bddRepository.findByShortId(shortId, urlEntites);
+      URI redirect = bddRepository.findByShortId(shortId);
       HttpHeaders httpHeaders = new HttpHeaders();
       httpHeaders.setLocation(redirect);
       return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);

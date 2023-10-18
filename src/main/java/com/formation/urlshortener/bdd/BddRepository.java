@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.formation.urlshortener.personalexception.InvalidUrlException;
+import com.formation.urlshortener.personalexception.MissingUrlException;
 import com.formation.urlshortener.webrest.Config;
 import org.springframework.stereotype.Repository;
 
@@ -43,10 +44,20 @@ public class BddRepository {
             throws InvalidUrlException, IOException {
         List<UrlEntity> urlEntities = readAllUrlEntities();
         if (urlEntities.stream().noneMatch(entity -> entity.getRealUrl().equals(newUrl))) {
-            System.out.println("@@@@@@@ "+newUrl+" n'est pas present en base");
+            System.out.println("@@@@@@@ " + newUrl + " n'est pas present en base");
             return true;
         } else
             throw new InvalidUrlException();
+    }
+
+    public Boolean idExist(String id) throws MissingUrlException, IOException {
+        List<UrlEntity> urlEntities = readAllUrlEntities();
+        System.out.println("@@@@@@@ check ID");
+        if (urlEntities.stream().anyMatch(entity -> entity.getId().equals(id))) {
+            System.out.println("@@@@@@@ " + id + " va etre supprimé");
+            return true;
+        } else
+            throw new MissingUrlException();
     }
 
     public List<UrlEntity> readAllUrlEntities() throws IOException {
@@ -80,8 +91,8 @@ public class BddRepository {
 
     }
 
-    public URI findByShortId(String shortId, List<UrlEntity> urlEntities) throws IOException {
-
+    public URI findByShortId(String shortId) throws IOException {
+        List<UrlEntity> urlEntities = readAllUrlEntities();
         int i = 0;
         for (UrlEntity urlEntity : urlEntities) {
             if (urlEntity.getShortId().equals(shortId)) {
@@ -107,9 +118,10 @@ public class BddRepository {
     }
 
     // deleteUselessUrl
-    public void deleteUrl(UrlEntity urlEntity) throws IOException {
+    public void deleteUrl(UrlEntity urlEntityToDelete) throws IOException {
         List<UrlEntity> urlEntities = readAllUrlEntities();
-        urlEntities.removeIf(url -> url.getId().equals(urlEntity.getId()));
+        urlEntities.removeIf(url -> url.getId().equals(urlEntityToDelete.getId()));
+        System.out.println("@@@@@@@ Suppression de : "+urlEntityToDelete);
         // System.out.println(urlEntities);
         mapper.writeValue(initBdd(), urlEntities);
         // saveUrls(urlEntities);
