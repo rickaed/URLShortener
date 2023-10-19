@@ -1,14 +1,11 @@
 package com.formation.urlshortener.webrest;
 
-import com.formation.urlshortener.bdd.BddRepository;
 import com.formation.urlshortener.personalexception.InvalidTokenException;
 import com.formation.urlshortener.personalexception.InvalidUrlException;
 import com.formation.urlshortener.personalexception.MissingUrlException;
 import com.formation.urlshortener.usecase.CreateUrlUseCase;
 import com.formation.urlshortener.usecase.DeleteUrlUseCase;
 import com.formation.urlshortener.usecase.NewEntityDto;
-
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,33 +13,27 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse.BodyHandlers;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 @Service
 public class AppService {
-    BddRepository bddRepository;
     CreateUrlUseCase createUrlUseCase;
     DeleteUrlUseCase deleteUrlUseCase;
 
-    AppService(BddRepository bddRepository, CreateUrlUseCase createUrlUseCase,
+    AppService(CreateUrlUseCase createUrlUseCase,
             DeleteUrlUseCase deleteUrlUseCase) {
-        this.bddRepository = bddRepository;
         this.createUrlUseCase = createUrlUseCase;
         this.deleteUrlUseCase = deleteUrlUseCase;
     }
 
-    String[] schemes = { "http", "https" };
 
-    public ResponseEntity<?> responseNewUrl(String newUrl)
+
+    public ResponseEntity<?> responseNewUrl(String newUrl, String host)
             throws URISyntaxException, InvalidUrlException, IOException, InterruptedException {
         newUrl = newUrl.replace("\"", "");
         URI newUri = new URI(String.format(newUrl));
 
-        if (validateUrl(newUri) && bddRepository.notExist(newUri) && pingUrl(newUri)) {
+        if (createUrlUseCase.check(newUri, host)) {
 
             System.out.println("@@@@@@@ " + newUri + " à passé tout les test");
 
@@ -54,30 +45,6 @@ public class AppService {
 
         }
         return null;
-    }
-
-    private boolean validateUrl(URI newUri) throws InvalidUrlException {
-        for (String scheme : schemes) {
-            if (newUri.getScheme().equals(scheme)) {
-                System.out.println("@@@@@@@ le scheme de " + newUri + " est validé");
-                return true;
-            }
-        }
-        throw new InvalidUrlException();
-    }
-
-    private boolean pingUrl(URI newUri) throws IOException, InterruptedException, InvalidUrlException {
-        final var request = HttpRequest.newBuilder(newUri)
-                .GET()
-                .build();
-        final var response = HttpClient.newHttpClient()
-                .send(request, BodyHandlers.ofString(StandardCharsets.UTF_8));
-        if (response.statusCode() == 200) {
-            System.out.printf("@@@@@@@ Status code %d ", response.statusCode());
-
-            return true;
-        }
-        throw new InvalidUrlException();
     }
 
     public HttpStatus responseDeleteUrl(String id, String token) throws IOException {
@@ -96,15 +63,6 @@ public class AppService {
             return HttpStatus.FORBIDDEN;
         }
 
-    }
-
-    public ResponseEntity<?> redirectBuilder(String shortId)
-            throws IOException {
-
-        URI redirect = bddRepository.findByShortId(shortId);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(redirect);
-        return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
     }
 
 }

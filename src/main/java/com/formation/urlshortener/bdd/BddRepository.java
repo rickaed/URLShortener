@@ -137,26 +137,6 @@ public Boolean shortIdExist(String shortid) throws MissingUrlException, IOExcept
         // saveUrls(urlEntities);
     }
 
-    // sortUrlByShirtId(alphabetique)
+  
 
 }
-// public UrlEntity getModeByName(String modeName) throws IOException {
-
-// for (UrlEntity m : urlEntities) {
-// if (m.getModeName().equals(modeName)) {
-// return m;
-// }
-// }
-// return null;
-// }
-
-// public void putMode(@PathVariable String modeName, @RequestBody UrlEntity
-// urlEntity) throws IOException {
-
-// for (UrlEntity m : urlEntities) {
-// if (m.getModeName().equals(modeName)) {
-// m.setDescription(urlEntity.getDescription());
-// }
-// }
-// objectMapper.writeValue(new File(pathMode), urlEntities);
-// }
