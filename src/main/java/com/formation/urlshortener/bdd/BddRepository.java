@@ -60,6 +60,16 @@ public class BddRepository {
             throw new MissingUrlException();
     }
 
+public Boolean shortIdExist(String shortid) throws MissingUrlException, IOException {
+        List<UrlEntity> urlEntities = readAllUrlEntities();
+        System.out.println("@@@@@@@ check ShortID");
+        if (urlEntities.stream().anyMatch(entity -> entity.getShortId().equals(shortid))) {
+            System.out.println("@@@@@@@ redirection de " + shortid );
+            return true;
+        } else
+            throw new MissingUrlException();
+    }
+
     public List<UrlEntity> readAllUrlEntities() throws IOException {
         return mapper.readValue(initBdd(), new TypeReference<>() {
         });

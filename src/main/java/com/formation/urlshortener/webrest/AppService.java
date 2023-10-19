@@ -6,9 +6,9 @@ import com.formation.urlshortener.personalexception.InvalidUrlException;
 import com.formation.urlshortener.personalexception.MissingUrlException;
 import com.formation.urlshortener.usecase.CreateUrlUseCase;
 import com.formation.urlshortener.usecase.DeleteUrlUseCase;
-import com.formation.urlshortener.usecase.Mapper;
 import com.formation.urlshortener.usecase.NewEntityDto;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,12 +27,10 @@ public class AppService {
     BddRepository bddRepository;
     CreateUrlUseCase createUrlUseCase;
     DeleteUrlUseCase deleteUrlUseCase;
-    Mapper mapper;
 
-    AppService(BddRepository bddRepository, Mapper mapper, CreateUrlUseCase createUrlUseCase,
+    AppService(BddRepository bddRepository, CreateUrlUseCase createUrlUseCase,
             DeleteUrlUseCase deleteUrlUseCase) {
         this.bddRepository = bddRepository;
-        this.mapper = mapper;
         this.createUrlUseCase = createUrlUseCase;
         this.deleteUrlUseCase = deleteUrlUseCase;
     }
@@ -43,7 +41,7 @@ public class AppService {
             throws URISyntaxException, InvalidUrlException, IOException, InterruptedException {
         newUrl = newUrl.replace("\"", "");
         URI newUri = new URI(String.format(newUrl));
-        
+
         if (validateUrl(newUri) && bddRepository.notExist(newUri) && pingUrl(newUri)) {
 
             System.out.println("@@@@@@@ " + newUri + " à passé tout les test");
@@ -99,4 +97,14 @@ public class AppService {
         }
 
     }
+
+    public ResponseEntity<?> redirectBuilder(String shortId)
+            throws IOException {
+
+        URI redirect = bddRepository.findByShortId(shortId);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(redirect);
+        return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
+    }
+
 }

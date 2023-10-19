@@ -30,8 +30,8 @@ public class CreateUrlUseCase {
         bddRepository.addUrl(newEntity);
 
         HashMap<String, Object> elemToSend = new HashMap<>();
-        elemToSend.put("entity", (NewEntityDto) entityDto(newEntity));
-        elemToSend.put("token", (String) newEntity.getToken());
+        elemToSend.put("entity", entityDto(newEntity));
+        elemToSend.put("token", newEntity.getToken());
         System.out.println("@@@@@@@ mon token envoyé : "+elemToSend.get("token"));
 
         return elemToSend;
