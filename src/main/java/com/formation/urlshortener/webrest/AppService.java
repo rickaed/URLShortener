@@ -9,8 +9,10 @@ import com.formation.urlshortener.usecase.DeleteUrlUseCase;
 import com.formation.urlshortener.usecase.NewEntityDto;
 import com.formation.urlshortener.usecase.TestReadAll;
 
+
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,12 +20,15 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+
+
 
 @Service
 public class AppService {
@@ -81,6 +86,7 @@ public class AppService {
         return new ResponseEntity<>(fullListUrl, HttpStatus.ACCEPTED);
     }
 
+
     @EventListener(ApplicationReadyEvent.class)
     public void cleanUp() {
         CompletableFuture.delayedExecutor(1, TimeUnit.DAYS).execute(() -> {
@@ -95,4 +101,5 @@ public class AppService {
 
         });
     }
+
 }

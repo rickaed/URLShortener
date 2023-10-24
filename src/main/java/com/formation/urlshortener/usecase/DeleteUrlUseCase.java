@@ -12,10 +12,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+
 @Service
 public class DeleteUrlUseCase {
     private final BddRepository bddRepository;
     SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+
 
     DeleteUrlUseCase(BddRepository bddRepository) {
         this.bddRepository = bddRepository;
@@ -37,6 +39,7 @@ public class DeleteUrlUseCase {
         }
     }
 
+
     public void autoDelete() throws IOException, ParseException {
         List<UrlEntity> list = bddRepository.readAllUrlEntities();
         for (UrlEntity url : list) {
@@ -47,5 +50,6 @@ public class DeleteUrlUseCase {
             }
         }
     }
+
 
 }

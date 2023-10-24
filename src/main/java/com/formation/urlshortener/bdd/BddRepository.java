@@ -12,15 +12,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
+
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.List;
 
 @Repository
 public class BddRepository {
 
-    private final Config config;
-    
+    private final Config config;   
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY HH:mm");
 
     public BddRepository(Config config) {
@@ -113,7 +114,9 @@ public class BddRepository {
 
                 // a decouper ********/
                 // updateDate()
+
                 urlEntity.setDate(dateFormat.format(new Date()));
+
                 // save()
                 urlEntities.set(i, urlEntity);
                 // SAVE

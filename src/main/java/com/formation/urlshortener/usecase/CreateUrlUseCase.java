@@ -13,6 +13,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
@@ -24,6 +25,7 @@ public class CreateUrlUseCase {
     private final Mapper mapper;
     private Date currentdate;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY HH:mm");
+
 
     CreateUrlUseCase(BddRepository bddRepository, Mapper mapper) {
         this.bddRepository = bddRepository;
@@ -46,7 +48,7 @@ public class CreateUrlUseCase {
                 System.out.println("@@@@@@@ le scheme de " + newUri + " est validé");
                 System.out.println("@@@ host url : " + newUri.getHost() + ", host local " + host);
                 if (host.contains(newUri.getHost())) {
-System.out.println("@@@@@@@ URL REFUSE");
+                  System.out.println("@@@@@@@ URL REFUSE");
                     throw new InvalidUrlException();
                 }
                 return true;
@@ -76,6 +78,7 @@ System.out.println("@@@@@@@ URL REFUSE");
                 newUrl,
                 genString(40),
                 dateFormat.format(new Date()));
+
         System.out.println("@@@@@@@ ma nouvelle entity " + newEntity);
 
         bddRepository.addUrl(newEntity);
