@@ -13,9 +13,9 @@ public class NewEntityDto {
     private URI realUrl;
 
     public NewEntityDto(String id, String shortId, URI realUrl) {
-        this.id=id;
-        this.shortId=shortId;
-        this.realUrl=realUrl;
+        this.id = id;
+        this.shortId = shortId;
+        this.realUrl = realUrl;
     }
 
     public String getId() {
@@ -41,6 +41,7 @@ public class NewEntityDto {
     public void setRealUrl(URI realUrl) {
         this.realUrl = realUrl;
     }
+
     @Override
     public String toString() {
         return "{" + "\n" +

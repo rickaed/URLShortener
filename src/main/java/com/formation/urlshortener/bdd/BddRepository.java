@@ -60,11 +60,11 @@ public class BddRepository {
             throw new MissingUrlException();
     }
 
-public Boolean shortIdExist(String shortid) throws MissingUrlException, IOException {
+    public Boolean shortIdExist(String shortid) throws MissingUrlException, IOException {
         List<UrlEntity> urlEntities = readAllUrlEntities();
         System.out.println("@@@@@@@ check ShortID");
         if (urlEntities.stream().anyMatch(entity -> entity.getShortId().equals(shortid))) {
-            System.out.println("@@@@@@@ redirection de " + shortid );
+            System.out.println("@@@@@@@ redirection de " + shortid);
             return true;
         } else
             throw new MissingUrlException();
@@ -131,12 +131,10 @@ public Boolean shortIdExist(String shortid) throws MissingUrlException, IOExcept
     public void deleteUrl(UrlEntity urlEntityToDelete) throws IOException {
         List<UrlEntity> urlEntities = readAllUrlEntities();
         urlEntities.removeIf(url -> url.getId().equals(urlEntityToDelete.getId()));
-        System.out.println("@@@@@@@ Suppression de : "+urlEntityToDelete);
+        System.out.println("@@@@@@@ Suppression de : " + urlEntityToDelete);
         // System.out.println(urlEntities);
         mapper.writeValue(initBdd(), urlEntities);
         // saveUrls(urlEntities);
     }
-
-  
 
 }

@@ -1,11 +1,14 @@
 package com.formation.urlshortener.webrest;
 
+import com.formation.urlshortener.bdd.UrlEntity;
 import com.formation.urlshortener.personalexception.InvalidTokenException;
 import com.formation.urlshortener.personalexception.InvalidUrlException;
 import com.formation.urlshortener.personalexception.MissingUrlException;
 import com.formation.urlshortener.usecase.CreateUrlUseCase;
 import com.formation.urlshortener.usecase.DeleteUrlUseCase;
 import com.formation.urlshortener.usecase.NewEntityDto;
+import com.formation.urlshortener.usecase.TestReadAll;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,19 +17,20 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class AppService {
     CreateUrlUseCase createUrlUseCase;
     DeleteUrlUseCase deleteUrlUseCase;
+    TestReadAll testReadAll;
 
     AppService(CreateUrlUseCase createUrlUseCase,
-            DeleteUrlUseCase deleteUrlUseCase) {
+            DeleteUrlUseCase deleteUrlUseCase, TestReadAll testReadAll) {
         this.createUrlUseCase = createUrlUseCase;
         this.deleteUrlUseCase = deleteUrlUseCase;
+        this.testReadAll = testReadAll;
     }
-
-
 
     public ResponseEntity<?> responseNewUrl(String newUrl, String host)
             throws URISyntaxException, InvalidUrlException, IOException, InterruptedException {
@@ -63,6 +67,12 @@ public class AppService {
             return HttpStatus.FORBIDDEN;
         }
 
+    }
+
+    public ResponseEntity<?> responseReadAll() throws IOException {
+        List<UrlEntity> fullListUrl = testReadAll.readAll();
+
+        return new ResponseEntity<>(fullListUrl, HttpStatus.ACCEPTED);
     }
 
 }
