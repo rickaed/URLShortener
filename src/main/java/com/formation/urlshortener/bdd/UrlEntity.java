@@ -1,30 +1,33 @@
-package com.app.urlshortener.bdd;
+package com.formation.urlshortener.bdd;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.net.URI;
 import java.util.Date;
 
-public class UrlEntity {
-
+public final class UrlEntity {
+    @JsonProperty("id")
     private String id;
     @JsonProperty("short-id")
     private String shortId;
     @JsonProperty("real-url")
-    private String realUrl;
-    @JsonProperty("removal-Token")
+    private URI realUrl;
+    @JsonProperty("X-Removal-Token")
     private String token;
-    @JsonProperty("access-date")
+    @JsonProperty("last-date-access")
     private Date date;
 
     public UrlEntity() {
     }
 
+    @JsonCreator
     public UrlEntity(
-            String id,
-            String shortId,
-            String realUrl,
-            String token,
-            Date date) {
+            @JsonProperty("id") final String id,
+            @JsonProperty("short-id") final String shortId,
+            @JsonProperty("real-url") final URI realUrl,
+            @JsonProperty("X-Removal-Token") final String token,
+            @JsonProperty("last-date-access") Date date) {
         this.id = id;
         this.shortId = shortId;
         this.realUrl = realUrl;
@@ -36,7 +39,7 @@ public class UrlEntity {
         return this.id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -44,23 +47,23 @@ public class UrlEntity {
         return this.shortId;
     }
 
-    public void setShortId(String shortId) {
+    public void setShortId(final String shortId) {
         this.shortId = shortId;
     }
 
-    public String getRealUrl() {
+    public URI getRealUrl() {
         return this.realUrl;
     }
 
-    public void setRealUrl(String realUrl) {
-        this.realUrl = realUrl;
+    public void setRealUrl(final URI newUrl) {
+        this.realUrl = newUrl;
     }
 
     public String getToken() {
         return this.token;
     }
 
-    public void setToken(String token) {
+    public void setToken(final String token) {
         this.token = token;
     }
 
@@ -77,8 +80,8 @@ public class UrlEntity {
         return "{" + "\n" +
                 "short-id :'" + shortId + '\'' +
                 ",\n real-url :'" + realUrl + '\'' +
-                ",\n removal-Token :'" + token + '\'' +
-                ",\n access-date :" + date +
+                ",\n X-Removal-Token :'" + token + '\'' +
+                ",\n last-date-access :" + date +
                 ",\n id :'" + id + '\'' + "\n" +
                 '}';
     }

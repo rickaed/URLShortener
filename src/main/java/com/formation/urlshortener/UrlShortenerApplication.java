@@ -1,4 +1,4 @@
-package com.app.urlshortener;
+package com.formation.urlshortener;
 
 
 import org.springframework.boot.SpringApplication;
