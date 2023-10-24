@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.net.URI;
 
-import java.util.Date;
-
-
 public final class UrlEntity {
     @JsonProperty("id")
     private String id;
@@ -20,7 +17,6 @@ public final class UrlEntity {
     @JsonProperty("last-date-access")
     String date;
 
-
     public UrlEntity() {
     }
 
@@ -30,8 +26,7 @@ public final class UrlEntity {
             @JsonProperty("short-id") final String shortId,
             @JsonProperty("real-url") final URI realUrl,
             @JsonProperty("X-Removal-Token") final String token,
-            @JsonProperty("last-date-access") String date)
-    {
+            @JsonProperty("last-date-access") String date) {
 
         this.id = id;
         this.shortId = shortId;
@@ -71,7 +66,6 @@ public final class UrlEntity {
     public void setToken(final String token) {
         this.token = token;
     }
-
 
     public String getDate() {
         return this.date;

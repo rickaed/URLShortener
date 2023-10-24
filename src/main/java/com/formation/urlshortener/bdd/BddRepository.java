@@ -21,7 +21,7 @@ import java.util.List;
 @Repository
 public class BddRepository {
 
-    private final Config config;   
+    private final Config config;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY HH:mm");
 
     public BddRepository(Config config) {

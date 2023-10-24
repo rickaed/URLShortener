@@ -5,7 +5,7 @@ import java.io.Serial;
 public class InvalidUrlException extends Exception {
     @Serial
     private static final long serialVersionUID = 1L;
-    private String method ;
+    private String method;
     // private Socket socket;
     // private SocketAddress clientUrl;
     // private InetAddress clientIp;
