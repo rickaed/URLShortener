@@ -12,6 +12,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
@@ -21,6 +23,9 @@ import java.util.UUID;
 public class CreateUrlUseCase {
     private final BddRepository bddRepository;
     private final Mapper mapper;
+    private Date currentdate;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY HH:mm");
+
 
     CreateUrlUseCase(BddRepository bddRepository, Mapper mapper) {
         this.bddRepository = bddRepository;
@@ -43,7 +48,7 @@ public class CreateUrlUseCase {
                 System.out.println("@@@@@@@ le scheme de " + newUri + " est validé");
                 System.out.println("@@@ host url : " + newUri.getHost() + ", host local " + host);
                 if (host.contains(newUri.getHost())) {
-
+                  System.out.println("@@@@@@@ URL REFUSE");
                     throw new InvalidUrlException();
                 }
                 return true;
@@ -68,8 +73,12 @@ public class CreateUrlUseCase {
 
     public HashMap<String, Object> createUrlEntity(URI newUrl) throws IOException {
         System.out.println("@@@@@@@ ma fonction createUrlEntity");
-        UrlEntity newEntity = new UrlEntity(UUID.randomUUID().toString(), genString(8), newUrl, genString(40),
-                new Date());
+        UrlEntity newEntity = new UrlEntity(UUID.randomUUID().toString(),
+                genString(8),
+                newUrl,
+                genString(40),
+                dateFormat.format(new Date()));
+
         System.out.println("@@@@@@@ ma nouvelle entity " + newEntity);
 
         bddRepository.addUrl(newEntity);

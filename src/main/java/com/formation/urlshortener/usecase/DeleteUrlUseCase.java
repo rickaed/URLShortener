@@ -7,10 +7,17 @@ import com.formation.urlshortener.personalexception.MissingUrlException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 
 @Service
 public class DeleteUrlUseCase {
     private final BddRepository bddRepository;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+
 
     DeleteUrlUseCase(BddRepository bddRepository) {
         this.bddRepository = bddRepository;
@@ -31,5 +38,18 @@ public class DeleteUrlUseCase {
             }
         }
     }
+
+
+    public void autoDelete() throws IOException, ParseException {
+        List<UrlEntity> list = bddRepository.readAllUrlEntities();
+        for (UrlEntity url : list) {
+
+            if (new Date().after(new Date((dateFormat.parse(url.getDate()).getTime() + (30l * 24 * 60 * 60 * 1000))))) {
+                System.out.println("suppression de "+url.getRealUrl());
+                bddRepository.deleteUrl(url);
+            }
+        }
+    }
+
 
 }
