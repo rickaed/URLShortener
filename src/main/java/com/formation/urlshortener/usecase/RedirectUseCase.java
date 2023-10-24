@@ -12,7 +12,7 @@ import java.net.URI;
 
 @Service
 public class RedirectUseCase {
-   private final BddRepository bddRepository;
+    private final BddRepository bddRepository;
 
     RedirectUseCase(BddRepository bddRepository) {
         this.bddRepository = bddRepository;

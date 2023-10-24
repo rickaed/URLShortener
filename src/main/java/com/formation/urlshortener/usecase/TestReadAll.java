@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 public class TestReadAll {
-   private final BddRepository bddRepository;
+    private final BddRepository bddRepository;
 
     TestReadAll(BddRepository bddRepository) {
         this.bddRepository = bddRepository;
