@@ -19,14 +19,23 @@ public class RedirectUseCase {
     }
 
     public ResponseEntity<?> responseRedirect(String shortId) throws IOException, MissingUrlException {
-        if (bddRepository.shortIdExist(shortId)) {
+
+        return this.bddRepository.findByWhatever()
+            .map(shortUrl -> {
+                HttpHeaders httpHeaders = new HttpHeaders();
+                httpHeaders.setLocation(shortUrl.getRealUrl());
+                return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
+            })
+            .orElseGet(() -> ResponseEntity.notFound().build());
+
+        /*if (bddRepository.shortIdExist(shortId)) {
 
             URI redirect = bddRepository.findByShortId(shortId);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setLocation(redirect);
             return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
         }
-        return null;
+        return null;*/
 
     }
 }

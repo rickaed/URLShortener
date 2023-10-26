@@ -14,6 +14,7 @@ import org.springframework.context.event.EventListener;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,10 +29,12 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class AppService {
+    // visibilité !!!!
     CreateUrlUseCase createUrlUseCase;
     DeleteUrlUseCase deleteUrlUseCase;
     TestReadAll testReadAll;
 
+    // ici aussi !
     AppService(CreateUrlUseCase createUrlUseCase,
             DeleteUrlUseCase deleteUrlUseCase, TestReadAll testReadAll) {
         this.createUrlUseCase = createUrlUseCase;
@@ -44,12 +47,14 @@ public class AppService {
         newUrl = newUrl.replace("\"", "");
         URI newUri = new URI(String.format(newUrl));
 
+        // logique applicative
         if (createUrlUseCase.check(newUri, host)) {
 
             System.out.println("@@@@@@@ " + newUri + " à passé tout les test");
 
             HashMap<String, Object> elemToSend = createUrlUseCase.createUrlEntity(newUri);
 
+            // logique HTTP
             return ResponseEntity.status(HttpStatus.CREATED)
                     .header("X-Removal-Token", (String) elemToSend.get("token"))
                     .body((NewEntityDto) elemToSend.get("entity"));
@@ -58,20 +63,20 @@ public class AppService {
         return null;
     }
 
-    public HttpStatus responseDeleteUrl(String id, String token) throws IOException {
+    public ResponseEntity<?> responseDeleteUrl(String id, String token) throws IOException {
         System.out.println("@@@@@@@ responseDeleteUrl");
         try {
             deleteUrlUseCase.checkToDelete(id, token);
             System.out.println("@@@@@@@ try check");
-            return HttpStatus.NO_CONTENT;
+            return ResponseEntity.noContent().build();
         } catch (MissingUrlException e) {
             System.out.println("@@@@@@@ mauvais ID");
             e.printStackTrace();
-            return HttpStatus.NOT_FOUND;
+            return ResponseEntity.notFound().build();
         } catch (InvalidTokenException e) {
             System.out.println("@@@@@@@ mauvais Token");
             e.printStackTrace();
-            return HttpStatus.FORBIDDEN;
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
     }
@@ -82,19 +87,14 @@ public class AppService {
         return new ResponseEntity<>(fullListUrl, HttpStatus.ACCEPTED);
     }
 
-    @EventListener(ApplicationReadyEvent.class)
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.DAYS)
     public void cleanUp() {
-        CompletableFuture.delayedExecutor(1, TimeUnit.DAYS).execute(() -> {
-            System.out.println("lancement supress");
-            cleanUp();
-            try {
-                deleteUrlUseCase.autoDelete();
-            } catch (IOException | ParseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        });
+        try {
+            deleteUrlUseCase.autoDelete();
+        } catch (IOException | ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

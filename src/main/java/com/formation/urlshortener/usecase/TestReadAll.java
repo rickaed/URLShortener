@@ -11,7 +11,7 @@ import java.util.List;
 public class TestReadAll {
     private final BddRepository bddRepository;
 
-    TestReadAll(BddRepository bddRepository) {
+    public TestReadAll(BddRepository bddRepository) {
         this.bddRepository = bddRepository;
     }
 

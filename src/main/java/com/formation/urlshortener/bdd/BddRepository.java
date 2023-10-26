@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class BddRepository {
@@ -74,7 +75,11 @@ public class BddRepository {
             throw new MissingUrlException();
     }
 
-    public List<UrlEntity> readAllUrlEntities() throws IOException {
+    public Optional<UrlEntity> findByWhatever(){
+        return Optional.ofNullable(null);
+    }
+
+    public List<UrlEntity> readAllUrlEntities() ,throws IOException {
         return mapper.readValue(initBdd(), new TypeReference<>() {
         });
     }
