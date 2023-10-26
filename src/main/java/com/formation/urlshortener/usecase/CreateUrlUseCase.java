@@ -12,6 +12,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
@@ -23,6 +24,8 @@ import java.util.UUID;
 public class CreateUrlUseCase {
     private final BddRepository bddRepository;
     private final Mapper mapper;
+
+    // thread safe ???
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-YYYY HH:mm");
 
     CreateUrlUseCase(BddRepository bddRepository, Mapper mapper) {
@@ -32,12 +35,8 @@ public class CreateUrlUseCase {
 
     private final String[] schemes = { "http", "https" };
 
-    public Boolean check(URI newUri, String host) throws InvalidUrlException, IOException, InterruptedException {
-        if (validateUrl(newUri, host) && bddRepository.notExist(newUri) && pingUrl(newUri)) {
-            return true;
-        }
-
-        return null;
+    public boolean check(URI newUri, String host) throws InvalidUrlException, IOException, InterruptedException {
+        return validateUrl(newUri, host) && bddRepository.notExist(newUri) && pingUrl(newUri)
     }
 
     private boolean validateUrl(URI newUri, String host) throws InvalidUrlException {
@@ -55,6 +54,9 @@ public class CreateUrlUseCase {
         throw new InvalidUrlException();
     }
 
+    // SSRF (Server Side Request Forgery) ???
+    // http://10.x.x.x
+    // https://portail.apps.eul.sncf.fr
     private boolean pingUrl(URI newUri) throws IOException, InterruptedException, InvalidUrlException {
         final var request = HttpRequest.newBuilder(newUri)
                 .GET()
@@ -75,7 +77,7 @@ public class CreateUrlUseCase {
                 genString(8),
                 newUrl,
                 genString(40),
-                dateFormat.format(new Date()));
+                new SimpleDateFormat("dd-MM-YYYY HH:mm").format(new Date()));
 
         System.out.println("@@@@@@@ ma nouvelle entity " + newEntity);
 
@@ -92,12 +94,12 @@ public class CreateUrlUseCase {
     // generation d'une suite de caractere alpohanumerique aléatoire
     // d'une longueur donnée
     public static String genString(int size) {
-        int leftLimit = 48; // numeral '0'
-        int rightLimit = 122; // letter 'z'
-        Random random = new Random();
+        char leftLimit = '0'; // numeral '0'
+        char rightLimit = 'z'; // letter 'z'
+        SecureRandom random = new SecureRandom(); // un PRNG qui n'est pas cryptographiquement sécurisé. les valeurs sont prédictibles (car basées sur le temps courant).
 
         return random.ints(leftLimit, rightLimit + 1)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                .filter(i -> (i <= '9' || i >= 'A') && (i <= 'Z' || i >= 'a'))
                 .limit(size)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();

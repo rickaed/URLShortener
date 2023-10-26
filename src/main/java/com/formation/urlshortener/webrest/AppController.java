@@ -84,7 +84,7 @@ public class AppController {
      * @throws IOException
      */
     @DeleteMapping("/links/{id}")
-    public HttpStatus delete(@RequestHeader("X-Removal-Token") String token, @PathVariable String id)
+    public ResponseEntity<?> delete(@RequestHeader("X-Removal-Token") String token, @PathVariable String id)
             throws IOException {
         System.out.println("@@@@@@@ DELETE @@@@@@@");
         return appService.responseDeleteUrl(id, token);
